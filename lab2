@@ -1,22 +1,54 @@
-CREATE DATABASE lab;
+CREATE DATABASE "lab2";
 
 CREATE TABLE countries(
-    country_id SERIAL PRIMARY KEY,
-    country_name VARCHAR(200),
-    region_id INTEGER,
-    population INTEGER
+    country_id SERIAL PRIMARY KEY ,
+    country_name VARCHAR(50),
+    region_id INT,
+    population INT
 );
-INSERT INTO countries(country_name,region_id,population) VALUES ('RUSSIA',1,10000000);
-INSERT INTO countries(country_name) VALUES ('Uk');
-INSERT INTO countries(country_name,region_id,population) VALUES ('Unknown',NULL,90000);
-INSERT INTO countries(country_name,region_id,population) VALUES ('Usa',2,8000000),('Europa',3,67000),('Korea',4,5000000);
-alter table countries alter column country_name set default 'kazakhstan';
-insert into countries(country_name, region_id, population) VALUES (default,5,650000);
-insert into countries default values ;
-CREATE TABLE countries_new AS TABLE countries WITH NO DATA;
-INSERT INTO countries_new select * from countries;
-update countries set region_id=1 where region_id is null;
-update countries set population=population * 1.1 returning country_name,population as "New_populations";
-delete from countries where population<100000;
-delete from countries_new using countries where countries.country_id=countries_new.country_id returning countries_new.*;
-delete from countries returning *;
+
+INSERT INTO countries(country_name, region_id, population)
+VALUES ('Kazakhstan', 01,18000000 );
+
+INSERT INTO countries(country_name)
+VALUES ('Uzbekistan');
+
+INSERT INTO countries(country_name, region_id, population)
+VALUES ('Kyrgyztan', NULL, 6800000);
+
+INSERT INTO countries(country_name, region_id, population)
+VALUES ('Russia', 02,140000000),
+       ('China', 03, 1410000000),
+       ('Mongolia', 04, 3400000);
+
+ALTER TABLE countries
+ALTER COLUMN country_name SET DEFAULT 'Another Country';
+
+INSERT INTO countries(region_id,population)
+VALUES (5, 1200000);
+
+INSERT INTO countries DEFAULT VALUES ;
+
+CREATE TABLE countries_new(LIKE countries INCLUDING ALL);
+
+INSERT INTO countries_new
+SELECT * FROM countries;
+
+UPDATE countries
+SET region_id = 1
+WHERE region_id IS NULL;
+
+SELECT countries.country_name,
+       countries.population * 1.1 AS "New Population"
+FROM countries;
+
+DELETE FROM countries
+WHERE population < 10000000
+RETURNING *;
+
+DELETE FROM countries_new
+WHERE country_id IN (SELECT country_id FROM countries)
+RETURNING *;
+
+DELETE FROM countries
+RETURNING *;
