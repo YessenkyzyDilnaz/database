@@ -1,6 +1,5 @@
 create database lab_4;
 
-drop table if exists warehouses cascade;
 create table warehouses
 (
     code     serial primary key,
@@ -8,7 +7,6 @@ create table warehouses
     capacity int
 );
 
-drop table if exists boxes cascade;
 create table boxes
 (
     code      char(4) primary key,
